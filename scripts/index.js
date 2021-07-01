@@ -60,9 +60,7 @@ popupSaveProfile.addEventListener('click', () => closePopup(popupProfile))
 
 // card's popup
 
-console.log(formCards);
-
-function createCard(title, link) {
+function createCard(cardData) {
   const cardTemplate = document.querySelector('#card-template').content,
         cardElement = cardTemplate.querySelector('.element').cloneNode(true),
         elementImage = cardElement.querySelector('.element__image'),
@@ -72,9 +70,9 @@ function createCard(title, link) {
 
   elementImage.addEventListener('click', () => openPopup(popupPhoto));
 
-  elementTitle.textContent = title;
-  elementImage.setAttribute('src', link);
-  elementImage.setAttribute('alt', title);
+  elementTitle.textContent = cardData.name;
+  elementImage.setAttribute('src', cardData.link);
+  elementImage.setAttribute('alt', cardData.name);
 
   cardLikeBtn.addEventListener('click', function(evt) {
     evt.target.classList.toggle('element__like-btn_active');
@@ -85,16 +83,16 @@ function createCard(title, link) {
   });
 
   elementImage.addEventListener('click', () => {
-    popupImage.setAttribute('src', link);
-    popupImage.setAttribute('alt', title);
-    popupCaption.textContent = title;
+    popupImage.setAttribute('src', cardData.link);
+    popupImage.setAttribute('alt', cardData.name);
+    popupCaption.textContent = cardData.name;
   }) ;
 
   return cardElement
 }
 
-function addCard(title, link, cardContainer) {
-  const card = createCard(title, link);
+function addCard(cardData, cardContainer) {
+  const card = createCard(cardData);
 
   cardContainer.prepend(card);
 }
@@ -103,20 +101,17 @@ function showDefaultCards() {
   initialCards.reverse();
 
   initialCards.forEach ((item) => {
-    const title = item.name,
-          link = item.link;
-
-    addCard(title, link, cardsList);
+    addCard(item, cardsList);
   });
 }
 
 formCards.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
-  const title = placeInput.value,
-        link = linkInput.value;
-
-  addCard(title, link, cardsList);
+  addCard({
+    name: placeInput.value,
+    link: linkInput.value
+  }, cardsList);
 
   formCards.reset();
 });
@@ -130,4 +125,3 @@ popupSaveCards.addEventListener('click', () => closePopup(popupCards));
 popupPhotoClosed.addEventListener('click', () => closePopup(popupPhoto));
 
 showDefaultCards();
-
